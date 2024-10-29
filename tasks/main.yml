@@ -1,6 +1,8 @@
 ---
 - name: Update apt cache.
-  apt: update_cache=yes cache_valid_time=3600
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
 - name: Install dirmngr in order to be able to install the apt signing key
   apt:
     pkg:
@@ -10,10 +12,11 @@
   apt_key:
     id: DBA36B5181D0C816F630E889D980A17457F6FB06
     keyserver: keyserver.ubuntu.com
+    keyring: /etc/apt/trusted.gpg.d/signal-desktop-keyring.gpg
   tags: signal
 - name: Add apt repo for Signal
   apt_repository:
-    repo: deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main
+    repo: deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main
     # setting filename required to not collide with the one provided by the deb similar to
     # https://github.com/microsoft/vscode/blob/master/resources/linux/debian/postinst.template
     filename: signal-xenial
